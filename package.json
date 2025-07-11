@@ -1,0 +1,36 @@
+{
+  "name": "@wharfkit/wallet-plugin-paycash",
+  "version": "0.1.0",
+  "description": "A Session Kit wallet plugin for the PayCash wallet.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rollup -c",
+    "test": "echo \"No tests yet\" && exit 0",
+    "lint": "eslint src --ext .ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhenek73/paycash_wfplugin.git"
+  },
+  "keywords": [
+    "wharfkit",
+    "wallet-plugin",
+    "paycash",
+    "antelope",
+    "eos",
+    "blockchain"
+  ],
+  "author": "zhenek73",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "rollup": "^4.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@wharfkit/session": "^1.0.0"
+  }
+} 
