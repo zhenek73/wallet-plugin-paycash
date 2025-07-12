@@ -4,7 +4,7 @@ A Session Kit wallet plugin for the PayCash wallet.
 
 ## Overview
 
-The PayCash wallet plugin enables users to authenticate and sign transactions using the PayCash wallet through QR code authentication. This plugin provides a cloud-only solution that doesn't require mobile app installation, making it accessible across all devices.
+The PayCash wallet plugin enables users to authenticate and sign transactions using the PayCash wallet through QR code authentication. 
 
 ## Features
 
@@ -126,14 +126,14 @@ For support and questions:
 
 - Create an issue on GitHub
 - Check the [WharfKit documentation](https://wharfkit.com)
-- Visit [PayCash documentation](https://pc4.store)
+- Visit [PayCash documentation](https://paycash.app)
 
 ## Related
 
 - [WharfKit Session Kit](https://github.com/wharfkit/session)
-- [PayCash Wallet](https://pc4.store)
+- [PayCash Wallet](https://paycash.app)
 - [Antelope Blockchain](https://antelope.io)
 
 ---
 
-Made with ❤️ for the Antelope ecosystem
+Made with ❤️ for the Antelope ecosystem and Paycash
