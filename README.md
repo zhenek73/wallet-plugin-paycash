@@ -18,7 +18,7 @@ The PayCash wallet plugin enables users to authenticate and sign transactions us
 ## Installation
 
 ```bash
-npm install @wharfkit/wallet-plugin-paycash
+yarn add @wharfkit/wallet-plugin-paycash
 ```
 
 ## Usage
@@ -63,7 +63,7 @@ const plugin = new WalletPluginPayCash({
 ### Prerequisites
 
 - Node.js 16+
-- npm or yarn
+- yarn
 
 ### Setup
 
@@ -73,20 +73,20 @@ git clone https://github.com/zhenek73/wallet-plugin-paycash.git
 cd wallet-plugin-paycash
 
 # Install dependencies
-npm install
+yarn install
 
 # Start development server
-npm start
+yarn start
 ```
 
 ### Building
 
 ```bash
 # Build the plugin
-npm run build
+yarn build
 
 # Build with watch mode
-npm run dev
+yarn dev
 ```
 
 ## Testing
@@ -95,7 +95,7 @@ The plugin includes a test application for development and testing:
 
 ```bash
 # Start test application
-npm start
+yarn start
 ```
 
 Then visit `http://localhost:3000` to test the plugin functionality.
