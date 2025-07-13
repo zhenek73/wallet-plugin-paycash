@@ -42358,7 +42358,7 @@ class WalletPluginPayCash extends AbstractWalletPlugin {
         if (!context.ui) {
             throw new Error('No UI available');
         }
-        const { callback, request, sameDeviceRequest, requestKey, privateKey } = await createIdentityRequest(context, this.buoyUrl);
+        const { callback, request, requestKey, privateKey } = await createIdentityRequest(context, this.buoyUrl);
         const elements = [
             {
                 type: 'qr',
@@ -42447,23 +42447,28 @@ const kit = new SessionKit({
         new WalletPluginAnchor(),
         new WalletPluginScatter(),
         new WalletPluginWombat(),
-        new WalletPluginPayCash(), // Новый форк PayCash
+        new WalletPluginPayCash(), // PayCash wallet plugin
     ],
     ui: webRenderer,
 });
-// Получить балансы всех токенов
+// Popular tokens for EOS Mainnet (can be extended)
+// const TOKENS = [
+//   {contract: 'eosio.token', symbol: 'EOS'},
+//   // {contract: 'tethertether', symbol: 'USDT'}, // example for other tokens
+// ];
+// Get balances for all tokens
 async function fetchBalances(session) {
     const account = session.permissionLevel.actor.toString();
     const balances = [];
     try {
-        // Создаём клиент напрямую (как в тестовой функции)
+        // Create client directly (as in test function)
         const { APIClient } = await Promise.resolve().then(function () { return antelope_m; });
         const { FetchProvider } = await Promise.resolve().then(function () { return antelope_m; });
         const client = new APIClient({
             provider: new FetchProvider('https://eos.greymass.com')
         });
         console.log('Fetching balances for account:', account);
-        // Получаем все балансы с eosio.token
+        // Get all balances from eosio.token
         const eosioResult = await client.v1.chain.get_currency_balance('eosio.token', account);
         console.log('eosio.token balances:', eosioResult);
         for (const entry of eosioResult) {
@@ -42472,7 +42477,7 @@ async function fetchBalances(session) {
                 balances.push({ symbol, contract: 'eosio.token', amount });
             }
         }
-        // Получаем все балансы с tethertether
+        // Get all balances from tethertether
         const tetherResult = await client.v1.chain.get_currency_balance('tethertether', account);
         console.log('tethertether balances:', tetherResult);
         for (const entry of tetherResult) {
@@ -42481,7 +42486,7 @@ async function fetchBalances(session) {
                 balances.push({ symbol, contract: 'tethertether', amount });
             }
         }
-        // Получаем все балансы с token.defi
+        // Get all balances from token.defi
         const defiResult = await client.v1.chain.get_currency_balance('token.defi', account);
         console.log('token.defi balances:', defiResult);
         for (const entry of defiResult) {
@@ -42497,30 +42502,30 @@ async function fetchBalances(session) {
     console.log('Final balances:', balances);
     return balances;
 }
-// Рендер балансы и форму
+// Render balances and form
 function renderBalancesAndForm(account, balances, session) {
     const root = document.getElementById('wallet-list');
     if (!root)
         return;
-    let html = `<h3>Баланс аккаунта <b>${account}</b>:</h3>`;
+    let html = `<h3>Account balance for <b>${account}</b>:</h3>`;
     if (balances.length === 0) {
-        html += '<div>Нет токенов с балансом > 0</div>';
+        html += '<div>No tokens with balance > 0</div>';
     }
     else {
-        html += '<ul>' + balances.map(b => `<li><b>${b.amount} ${b.symbol}</b> (контракт: ${b.contract})</li>`).join('') + '</ul>';
+        html += '<ul>' + balances.map(b => `<li><b>${b.amount} ${b.symbol}</b> (contract: ${b.contract})</li>`).join('') + '</ul>';
     }
-    // Форма отправки EOS
+    // EOS transfer form
     html += `
-    <h3>Отправить EOS</h3>
+    <h3>Send EOS</h3>
     <form id="send-eos-form">
-      <label>Кому (аккаунт): <input name="to" required></label><br>
-      <label>Сколько (EOS): <input name="amount" type="number" step="0.0001" min="0.0001" required></label><br>
-      <button type="submit">Отправить</button>
+      <label>To (account): <input name="to" required></label><br>
+      <label>Amount (EOS): <input name="amount" type="number" step="0.0001" min="0.0001" required></label><br>
+      <button type="submit">Send</button>
     </form>
     <div id="tx-result"></div>
   `;
     root.innerHTML = html;
-    // Обработчик формы
+    // Form handler
     const form = document.getElementById('send-eos-form');
     if (form) {
         form.onsubmit = async (e) => {
@@ -42528,7 +42533,7 @@ function renderBalancesAndForm(account, balances, session) {
             const to = form.elements.namedItem('to').value.trim();
             const amount = form.elements.namedItem('amount').value.trim();
             const resultDiv = document.getElementById('tx-result');
-            resultDiv.textContent = 'Отправка...';
+            resultDiv.textContent = 'Sending...';
             try {
                 const action = {
                     account: 'eosio.token',
@@ -42542,11 +42547,11 @@ function renderBalancesAndForm(account, balances, session) {
                     },
                 };
                 const res = await session.transact({ actions: [action] }, { broadcast: true });
-                let txid = res.transaction_id || (res.transaction && res.transaction.id) || JSON.stringify(res);
-                resultDiv.textContent = 'Транзакция отправлена! ID: ' + txid;
+                const txid = res.transaction_id || (res.transaction && res.transaction?.id) || JSON.stringify(res);
+                resultDiv.textContent = 'Transaction sent! ID: ' + txid;
             }
             catch (err) {
-                resultDiv.textContent = 'Ошибка: ' + (err.message || err);
+                resultDiv.textContent = 'Error: ' + (err.message || err);
             }
         };
     }
@@ -42565,29 +42570,29 @@ document.getElementById('connect-wallet')?.addEventListener('click', async () =>
         console.error(e);
     }
 });
-// Тестовая функция для получения балансов без авторизации
+// Test function to get balances without authorization
 async function testBalances() {
     try {
-        // Создаём клиент для основной сети EOS
+        // Create client for EOS mainnet
         const { APIClient } = await Promise.resolve().then(function () { return antelope_m; });
         const { FetchProvider } = await Promise.resolve().then(function () { return antelope_m; });
         const client = new APIClient({
             provider: new FetchProvider('https://eos.greymass.com')
         });
-        console.log('Testing balances for cryptozhenek...');
-        // Получаем все балансы с eosio.token
-        const eosioResult = await client.v1.chain.get_currency_balance('eosio.token', 'cryptozhenek');
+        console.log('Testing balances for eosio...');
+        // Get all balances from eosio.token
+        const eosioResult = await client.v1.chain.get_currency_balance('eosio.token', 'eosio');
         console.log('eosio.token balances:', eosioResult);
-        // Получаем все балансы с tethertether
-        const tetherResult = await client.v1.chain.get_currency_balance('tethertether', 'cryptozhenek');
+        // Get all balances from tethertether
+        const tetherResult = await client.v1.chain.get_currency_balance('tethertether', 'eosio');
         console.log('tethertether balances:', tetherResult);
-        // Получаем все балансы с token.defi
-        const defiResult = await client.v1.chain.get_currency_balance('token.defi', 'cryptozhenek');
+        // Get all balances from token.defi
+        const defiResult = await client.v1.chain.get_currency_balance('token.defi', 'eosio');
         console.log('token.defi balances:', defiResult);
-        // Выводим результат на страницу
+        // Display result on page
         const testDiv = document.getElementById('wallet-list');
         if (testDiv) {
-            let html = '<h3>Тест балансов cryptozhenek:</h3>';
+            let html = '<h3>Test balances for eosio:</h3>';
             html += '<h4>eosio.token:</h4><ul>';
             eosioResult.forEach(balance => {
                 html += `<li>${balance}</li>`;
@@ -42610,11 +42615,11 @@ async function testBalances() {
         console.error('Error testing balances:', e);
         const testDiv = document.getElementById('wallet-list');
         if (testDiv) {
-            testDiv.innerHTML = '<h3>Ошибка при получении балансов:</h3><pre>' + e + '</pre>';
+            testDiv.innerHTML = '<h3>Error getting balances:</h3><pre>' + e + '</pre>';
         }
     }
 }
-// Вызываем тест при загрузке страницы
+// Call test when page loads
 testBalances();
 
 export { Chains as C, PermissionLevel as P, Serializer as S, Transaction as T, Checksum256 as a, Canceled as b, SigningRequest as c };

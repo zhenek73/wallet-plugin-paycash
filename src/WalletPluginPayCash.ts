@@ -8,7 +8,6 @@ import {
     PromptElement,
     PublicKey,
     ResolvedSigningRequest,
-    Serializer,
     TransactContext,
     WalletPluginConfig,
     WalletPluginLoginResponse,
@@ -17,7 +16,6 @@ import {
 } from '@wharfkit/session'
 import {
     createIdentityRequest,
-    isKnownMobile,
     waitForCallback,
     verifyLoginCallbackResponse,
 } from '@wharfkit/protocol-esr'
@@ -26,7 +24,7 @@ export class WalletPluginPayCash extends AbstractWalletPlugin {
     chain: Checksum256 | undefined
     auth: PermissionLevel | undefined
     requestKey: PublicKey | undefined
-    privateKey: any
+    privateKey: unknown
     signerKey: PublicKey | undefined
     channelUrl: string | undefined
     channelName: string | undefined
@@ -59,7 +57,7 @@ export class WalletPluginPayCash extends AbstractWalletPlugin {
         if (!context.ui) {
             throw new Error('No UI available')
         }
-        const { callback, request, sameDeviceRequest, requestKey, privateKey } =
+        const { callback, request, requestKey, privateKey } =
             await createIdentityRequest(context, this.buoyUrl)
         const elements: PromptElement[] = [
             {

@@ -1,0 +1,9 @@
+src/
+public/
+rollup.config.js
+tsconfig.json
+.eslintrc.json
+.editorconfig
+.gitignore
+Makefile
+*.log 

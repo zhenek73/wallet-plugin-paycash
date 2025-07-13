@@ -1,1 +1,1 @@
-
+export { WalletPluginPayCash } from './WalletPluginPayCash'

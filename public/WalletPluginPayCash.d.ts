@@ -3,7 +3,7 @@ export declare class WalletPluginPayCash extends AbstractWalletPlugin {
     chain: Checksum256 | undefined;
     auth: PermissionLevel | undefined;
     requestKey: PublicKey | undefined;
-    privateKey: any;
+    privateKey: unknown;
     signerKey: PublicKey | undefined;
     channelUrl: string | undefined;
     channelName: string | undefined;
