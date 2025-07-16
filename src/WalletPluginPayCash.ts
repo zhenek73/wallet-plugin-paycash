@@ -82,7 +82,8 @@ export class WalletPluginPayCash extends AbstractWalletPlugin {
         this.channelUrl = callbackResponse.link_ch
         this.channelName = callbackResponse.link_name
         const resolvedResponse = await ResolvedSigningRequest.fromPayload(
-            callbackResponse
+            callbackResponse,
+            context.esrOptions
         )
         const identityProof = resolvedResponse.getIdentityProof(callbackResponse.sig)
         return {
