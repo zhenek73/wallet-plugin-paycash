@@ -1,5 +1,9 @@
 # @wharfkit/wallet-plugin-paycash
 
+> **⚠️ Important Notice:**
+> 
+> Due to current limitations in the PayCash wallet, this plugin only supports authentication (login) via QR code. Transaction signing via QR code (ESR) is **not supported** by PayCash at this time. As a result, this plugin cannot be used for signing or broadcasting transactions through PayCash QR/ESR. If PayCash adds support for transaction ESR in the future, this plugin can be updated to enable full cold wallet functionality.
+
 A Session Kit wallet plugin for the PayCash wallet.
 
 ## Overview

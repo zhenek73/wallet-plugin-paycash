@@ -103,38 +103,46 @@ export class WalletPluginPayCash extends AbstractWalletPlugin {
         if (!context.ui) {
             throw new Error('No UI available')
         }
-        // Create QR and link for signing
+        // Create a signing request for the transaction
         const modifiedRequest = await context.createRequest({ transaction: resolved.transaction })
-        const callback = modifiedRequest.setCallback(this.buoyUrl, false)
-        const request = modifiedRequest.encode(true, false)
-        const sameDeviceRequest = modifiedRequest.clone()
-        sameDeviceRequest.setInfoKey('same_device', true)
+        // Generate ESR URI for the transaction
+        const esrUri = modifiedRequest.encode(true, false, 'esr:')
+        // Show QR code to the user for cold wallet signing
         const elements: PromptElement[] = [
             {
                 type: 'qr',
-                data: String(request),
+                data: esrUri,
             },
             {
-                type: 'link',
-                label: 'Open PayCash',
+                type: 'textarea',
+                label: 'Instructions',
                 data: {
-                    href: String(sameDeviceRequest),
-                    label: 'Open PayCash',
-                },
+                    value: 'Scan this QR code with your PayCash wallet to sign the transaction. After signing, paste the signature below.',
+                    readonly: true,
+                }
+            },
+            {
+                type: 'textarea',
+                label: 'Signature',
+                data: {
+                    placeholder: 'Paste the signature from PayCash here',
+                }
             },
         ]
-        const promptPromise = context.ui.prompt({
-            title: 'Complete using PayCash',
-            body: `Please open your PayCash Wallet to review and approve this transaction.`,
+        // Prompt the user and wait for signature input
+        const promptResponse = await context.ui.prompt({
+            title: 'Sign Transaction with PayCash',
+            body: 'Scan the QR code with PayCash, sign the transaction, and paste the signature below.',
             elements,
         })
-        promptPromise.catch(() => {})
-        // Wait for wallet response
-        const callbackResponse: CallbackPayload = await waitForCallback(callback, undefined, undefined)
-        // Signatures are always an array of strings
-        const signatures = Array.isArray(callbackResponse.sig) ? callbackResponse.sig : (callbackResponse.sig ? [callbackResponse.sig] : [])
+        // Extract the signature from the textarea (use label as key, cast to any to avoid linter error)
+        const signature = (promptResponse as any)['Signature'] || ''
+        if (!signature) {
+            throw new Error('No signature provided. Please sign the transaction in PayCash and paste the signature.')
+        }
+        // Return the signature in the expected format
         return {
-            signatures: signatures.filter(Boolean),
+            signatures: [signature],
         }
     }
 } 

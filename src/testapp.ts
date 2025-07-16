@@ -47,11 +47,8 @@ async function fetchBalances(session: { permissionLevel: { actor: { toString: ()
       provider: new FetchProvider('https://eos.greymass.com') 
     });
     
-    console.log('Fetching balances for account:', account);
-    
     // Get all balances from eosio.token
     const eosioResult = await client.v1.chain.get_currency_balance('eosio.token', account);
-    console.log('eosio.token balances:', eosioResult);
     for (const entry of eosioResult) {
       const [amount, symbol] = entry.toString().split(' ');
       if (parseFloat(amount) > 0) {
@@ -61,7 +58,6 @@ async function fetchBalances(session: { permissionLevel: { actor: { toString: ()
     
     // Get all balances from tethertether
     const tetherResult = await client.v1.chain.get_currency_balance('tethertether', account);
-    console.log('tethertether balances:', tetherResult);
     for (const entry of tetherResult) {
       const [amount, symbol] = entry.toString().split(' ');
       if (parseFloat(amount) > 0) {
@@ -71,7 +67,6 @@ async function fetchBalances(session: { permissionLevel: { actor: { toString: ()
     
     // Get all balances from token.defi
     const defiResult = await client.v1.chain.get_currency_balance('token.defi', account);
-    console.log('token.defi balances:', defiResult);
     for (const entry of defiResult) {
       const [amount, symbol] = entry.toString().split(' ');
       if (parseFloat(amount) > 0) {
@@ -83,7 +78,6 @@ async function fetchBalances(session: { permissionLevel: { actor: { toString: ()
     console.error('Error fetching balances:', e);
   }
 
-  console.log('Final balances:', balances);
   return balances;
 }
 
@@ -163,19 +157,14 @@ async function testBalances() {
       provider: new FetchProvider('https://eos.greymass.com') 
     });
     
-    console.log('Testing balances for eosio...');
-    
     // Get all balances from eosio.token
     const eosioResult = await client.v1.chain.get_currency_balance('eosio.token', 'eosio');
-    console.log('eosio.token balances:', eosioResult);
     
     // Get all balances from tethertether
     const tetherResult = await client.v1.chain.get_currency_balance('tethertether', 'eosio');
-    console.log('tethertether balances:', tetherResult);
     
     // Get all balances from token.defi
     const defiResult = await client.v1.chain.get_currency_balance('token.defi', 'eosio');
-    console.log('token.defi balances:', defiResult);
     
     // Display result on page
     const testDiv = document.getElementById('wallet-list');
