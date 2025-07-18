@@ -4,12 +4,52 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PayCash Wallet Plugin Test Page</title>
+  <!-- Uix Kit CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uix-kit@1.0.0/dist/css/uix-kit.min.css" />
+  <style>
+    body {
+      background: #f7f9fb;
+      min-height: 100vh;
+    }
+    .centered-container {
+      max-width: 480px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 4px 32px 0 rgba(0,0,0,0.07);
+      padding: 2.5rem 2rem 2rem 2rem;
+    }
+    .logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .logo img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      box-shadow: 0 2px 12px 0 rgba(0,0,0,0.08);
+      background: #fff;
+    }
+    .uix-btn {
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    #wallet-list {
+      margin-top: 2rem;
+    }
+  </style>
 </head>
 <body>
-  <h1>PayCash Wallet Plugin Test Page</h1>
-  <p>WharfKit is connected. Below is a button to connect your wallet.</p>
-  <button id="connect-wallet">Connect Wallet</button>
-  <div id="wallet-list"></div>
+  <div class="centered-container">
+    <div class="logo">
+      <img src="paycash-logo.svg" alt="PayCash Logo" />
+    </div>
+    <h2 class="uix-t-c uix-mb-1">PayCash Wallet Plugin Test</h2>
+    <p class="uix-t-c uix-mb-2">WharfKit is connected. Below is a button to connect your wallet.</p>
+    <button id="connect-wallet" class="uix-btn uix-btn--primary uix-btn--lg">Connect Wallet</button>
+    <div id="wallet-list"></div>
+  </div>
   <script type="module" src="testapp.js"></script>
 </body>
 </html> 

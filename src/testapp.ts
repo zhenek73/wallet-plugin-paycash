@@ -85,22 +85,31 @@ async function fetchBalances(session: { permissionLevel: { actor: { toString: ()
 function renderBalancesAndForm(account: string, balances: Array<{symbol: string, contract: string, amount: string}>, session: unknown) {
   const root = document.getElementById('wallet-list');
   if (!root) return;
-  let html = `<h3>Account balance for <b>${account}</b>:</h3>`;
+  let html = `<div class="uix-card uix-p-2 uix-mb-2">
+    <h3 class="uix-t-c uix-mb-1">Account balance for <b>${account}</b>:</h3>`;
   if (balances.length === 0) {
-    html += '<div>No tokens with balance > 0</div>';
+    html += '<div class="uix-t-c uix-mb-2">No tokens with balance &gt; 0</div>';
   } else {
-    html += '<ul>' + balances.map(b => `<li><b>${b.amount} ${b.symbol}</b> (contract: ${b.contract})</li>`).join('') + '</ul>';
+    html += '<ul class="uix-list uix-list--bordered uix-mb-2">' + balances.map(b => `<li><b>${b.amount} ${b.symbol}</b> <span class="uix-text--muted">(contract: ${b.contract})</span></li>`).join('') + '</ul>';
   }
   // EOS transfer form
   html += `
-    <h3>Send EOS</h3>
-    <form id="send-eos-form">
-      <label>To (account): <input name="to" required></label><br>
-      <label>Amount (EOS): <input name="amount" type="number" step="0.0001" min="0.0001" required></label><br>
-      <button type="submit">Send</button>
+    <h3 class="uix-t-c uix-mb-1">Send EOS</h3>
+    <form id="send-eos-form" class="uix-form uix-mb-2">
+      <div class="uix-form-group">
+        <label>To (account):
+          <input name="to" class="uix-input" required>
+        </label>
+      </div>
+      <div class="uix-form-group">
+        <label>Amount (EOS):
+          <input name="amount" class="uix-input" type="number" step="0.0001" min="0.0001" required>
+        </label>
+      </div>
+      <button type="submit" class="uix-btn uix-btn--primary uix-btn--lg">Send</button>
     </form>
-    <div id="tx-result"></div>
-  `;
+    <div id="tx-result" class="uix-t-c uix-mt-1"></div>
+  </div>`;
   root.innerHTML = html;
   // Form handler
   const form = document.getElementById('send-eos-form') as HTMLFormElement;
@@ -125,9 +134,9 @@ function renderBalancesAndForm(account: string, balances: Array<{symbol: string,
         };
         const res = await (session as { transact: (options: unknown, config?: unknown) => Promise<unknown> }).transact({actions: [action]}, {broadcast: true});
         const txid = (res as { transaction_id?: string, transaction?: { id?: string } }).transaction_id || ((res as { transaction?: { id?: string } }).transaction && (res as { transaction?: { id?: string } }).transaction?.id) || JSON.stringify(res);
-        resultDiv!.textContent = 'Transaction sent! ID: ' + txid;
+        resultDiv!.innerHTML = '<span class="uix-text--success">Transaction sent! ID: ' + txid + '</span>';
       } catch (err: unknown) {
-        resultDiv!.textContent = 'Error: ' + ((err as Error).message || err);
+        resultDiv!.innerHTML = '<span class="uix-text--danger">Error: ' + ((err as Error).message || err) + '</span>';
       }
     };
   }
